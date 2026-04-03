@@ -48,6 +48,11 @@ function MeldingCard({ melding, onClick, onDelete, onToggleAfgehandeld }: Meldin
 
       <div className="melding-meta">
         {melding.categorie && <span className="melding-categorie">{melding.categorie}</span>}
+        {melding.oplossingen && melding.oplossingen.length > 0 && (
+          <span className="melding-oplossing-badge">
+            💡 {melding.oplossingen.length}
+          </span>
+        )}
         <span className={`melding-status ${melding.isAfgehandeld ? 'status-afgehandeld' : 'status-open'}`}>
           {melding.isAfgehandeld ? 'Afgehandeld' : 'Open'}
         </span>

@@ -143,6 +143,7 @@ function App() {
               onEdit={(m) => { setSelectedMelding(m); setView('edit') }}
               onDelete={handleDelete}
               onToggleAfgehandeld={handleToggleAfgehandeld}
+              onNavigate={fetchMeldingById}
             />
           </section>
         )}

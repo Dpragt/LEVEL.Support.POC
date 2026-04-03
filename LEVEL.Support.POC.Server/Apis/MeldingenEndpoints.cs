@@ -35,7 +35,11 @@ public static class MeldingenEndpoints
 
     private static async Task<IResult> GetById(int id, DataContext db)
     {
-        var melding = await db.Meldingen.FindAsync(id);
+        var melding = await db.Meldingen
+            .Include(m => m.Oplossingen.OrderByDescending(o => o.AangemaaktOp))
+            .Include(m => m.GekoppeldeMeldingen)
+                .ThenInclude(g => g.Gekoppeld)
+            .FirstOrDefaultAsync(m => m.Id == id);
 
         return melding is not null
             ? Results.Ok(melding)
@@ -59,6 +63,7 @@ public static class MeldingenEndpoints
 
         melding.Titel = input.Titel;
         melding.Beschrijving = input.Beschrijving;
+        melding.Samenvatting = input.Samenvatting;
         melding.Applicatie = input.Applicatie;
         melding.Categorie = input.Categorie;
         melding.Prioriteit = input.Prioriteit;

@@ -13,6 +13,9 @@ builder.Services.AddProblemDetails();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+builder.Services.ConfigureHttpJsonOptions(options =>
+    options.SerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);
+
 builder.Services.AddDbContext<DataContext>(opt =>
     opt.UseInMemoryDatabase("MeldingenDb"));
 
@@ -52,7 +55,9 @@ api.MapGet("weatherforecast", () =>
 .WithName("GetWeatherForecast");
 
 api.MapGroup("/meldingen")
-   .MapMeldingen();
+   .MapMeldingen()
+   .MapOplossingen()
+   .MapGekoppeldeMeldingen();
 
 app.MapDefaultEndpoints();
 
