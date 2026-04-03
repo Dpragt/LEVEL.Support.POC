@@ -514,6 +514,405 @@
     padding: 1rem;
   }
 }
+
+/* ── Meldingen ── */
+
+.melding-card {
+  cursor: default;
+}
+
+.melding-afgehandeld {
+  opacity: 0.65;
+}
+
+.melding-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.melding-prioriteit {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #fff;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.melding-titel {
+  font-size: 1rem;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.melding-applicatie {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent-gradient-start);
+  background: rgba(124, 146, 245, 0.12);
+  padding: 0.2rem 0.6rem;
+  border-radius: 0.25rem;
+  align-self: flex-start;
+}
+
+@media (prefers-color-scheme: light) {
+  .melding-applicatie {
+    background: rgba(91, 111, 216, 0.1);
+    color: var(--accent-gradient-end);
+  }
+}
+
+.melding-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+
+.melding-categorie {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.15rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+@media (prefers-color-scheme: light) {
+  .melding-categorie {
+    background: rgba(0, 0, 0, 0.06);
+  }
+}
+
+.melding-status {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+}
+
+.status-open {
+  color: #f6ad55;
+  background: rgba(246, 173, 85, 0.15);
+}
+
+.status-afgehandeld {
+  color: #68d391;
+  background: rgba(104, 211, 145, 0.15);
+}
+
+.melding-card-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--weather-card-border);
+}
+
+.melding-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  border: none;
+  border-radius: 0.375rem;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.melding-btn:focus-visible {
+  outline: 3px solid var(--focus-color);
+  outline-offset: 2px;
+}
+
+.melding-btn-detail {
+  flex: 1;
+  background: linear-gradient(135deg, var(--accent-gradient-start), var(--accent-gradient-end));
+  color: #fff;
+}
+
+.melding-btn-detail:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.35);
+}
+
+.melding-btn-toggle {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+}
+
+.melding-btn-toggle:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--text-primary);
+}
+
+@media (prefers-color-scheme: light) {
+  .melding-btn-toggle {
+    background: rgba(0, 0, 0, 0.06);
+  }
+  .melding-btn-toggle:hover {
+    background: rgba(0, 0, 0, 0.1);
+  }
+}
+
+.melding-btn-delete {
+  background: transparent;
+  color: var(--text-tertiary);
+  padding: 0.4rem;
+}
+
+.melding-btn-delete:hover {
+  color: var(--error-border);
+  background: var(--error-bg);
+}
+
+.melding-btn-edit {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+}
+
+.melding-btn-edit:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--text-primary);
+}
+
+@media (prefers-color-scheme: light) {
+  .melding-btn-edit {
+    background: rgba(0, 0, 0, 0.06);
+  }
+  .melding-btn-edit:hover {
+    background: rgba(0, 0, 0, 0.1);
+  }
+}
+
+.melding-btn-cancel {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+}
+
+.melding-btn-cancel:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--text-primary);
+}
+
+@media (prefers-color-scheme: light) {
+  .melding-btn-cancel {
+    background: rgba(0, 0, 0, 0.06);
+  }
+  .melding-btn-cancel:hover {
+    background: rgba(0, 0, 0, 0.1);
+  }
+}
+
+.melding-btn-back {
+  background: transparent;
+  color: var(--text-secondary);
+  padding: 0.5rem 0;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.melding-btn-back:hover {
+  color: var(--text-primary);
+}
+
+/* Detail view */
+.melding-detail {
+  width: 100%;
+  max-width: 1200px;
+  animation: fadeInUp 0.4s ease-out;
+}
+
+.melding-detail-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.melding-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.melding-detail-date {
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+  margin: 0.35rem 0 0;
+}
+
+.melding-detail-badges {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.melding-detail-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.melding-detail-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+}
+
+.melding-detail-beschrijving {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.melding-detail-actions {
+  display: flex;
+  gap: 0.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--weather-card-border);
+  flex-wrap: wrap;
+}
+
+/* Empty state */
+.melding-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem 1rem;
+  color: var(--text-tertiary);
+}
+
+/* Form */
+.melding-form-overlay {
+  width: 100%;
+  max-width: 640px;
+  animation: fadeInUp 0.4s ease-out;
+}
+
+.melding-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.form-field label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.form-field input[type="text"],
+.form-field textarea,
+.form-field select {
+  background: var(--weather-card-bg);
+  border: 1px solid var(--weather-card-border);
+  border-radius: 0.5rem;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  transition: border-color 0.2s ease;
+  font-family: inherit;
+}
+
+.form-field input[type="text"]:focus,
+.form-field textarea:focus,
+.form-field select:focus {
+  outline: none;
+  border-color: var(--accent-gradient-start);
+  box-shadow: 0 0 0 3px rgba(124, 146, 245, 0.2);
+}
+
+.form-field textarea {
+  resize: vertical;
+  min-height: 5rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-checkbox label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-transform: none;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.form-checkbox input[type="checkbox"] {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--accent-gradient-start);
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--weather-card-border);
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .melding-card-actions {
+    flex-wrap: wrap;
+  }
+
+  .melding-detail-actions {
+    flex-direction: column;
+  }
+
+  .melding-detail-actions .melding-btn {
+    width: 100%;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .form-actions .melding-btn,
+  .form-actions .refresh-button {
+    width: 100%;
+    justify-content: center;
+  }
+}
 .app-footer {
   padding: 1.5rem;
   text-align: center;

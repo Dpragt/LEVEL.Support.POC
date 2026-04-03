@@ -1,3 +1,7 @@
+using LEVEL.Support.POC.Server.Apis;
+using LEVEL.Support.POC.Server.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add service defaults & Aspire client integrations.
@@ -9,7 +13,17 @@ builder.Services.AddProblemDetails();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+builder.Services.AddDbContext<DataContext>(opt =>
+    opt.UseInMemoryDatabase("MeldingenDb"));
+
 var app = builder.Build();
+
+// Seed the in-memory database.
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<DataContext>();
+    DataSeeder.Seed(db);
+}
 
 // Configure the HTTP request pipeline.
 app.UseExceptionHandler();
@@ -36,6 +50,9 @@ api.MapGet("weatherforecast", () =>
     return forecast;
 })
 .WithName("GetWeatherForecast");
+
+api.MapGroup("/meldingen")
+   .MapMeldingen();
 
 app.MapDefaultEndpoints();
 
