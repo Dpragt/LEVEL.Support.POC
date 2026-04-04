@@ -1,6 +1,9 @@
+using LEVEL.Support.POC.Server.Agents;
 using LEVEL.Support.POC.Server.Apis;
 using LEVEL.Support.POC.Server.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.AI;
+using OpenAI;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +22,23 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 builder.Services.AddDbContext<DataContext>(opt =>
     opt.UseInMemoryDatabase("MeldingenDb"));
 
+// AI Chat Client configuratie
+var openAiKey = builder.Configuration["OpenAI:ApiKey"];
+var openAiModel = builder.Configuration["OpenAI:Model"] ?? "gpt-4o-mini";
+
+if (!string.IsNullOrEmpty(openAiKey))
+{
+    builder.Services.AddChatClient(new OpenAIClient(openAiKey).GetChatClient(openAiModel).AsIChatClient());
+}
+else
+{
+    builder.Services.AddSingleton<IChatClient>(sp =>
+        throw new InvalidOperationException(
+            "OpenAI API key niet geconfigureerd. Stel 'OpenAI:ApiKey' in via appsettings of user secrets."));
+}
+
+builder.Services.AddScoped<ClassificationAgent>();
+
 var app = builder.Build();
 
 // Seed the in-memory database.
@@ -36,23 +56,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-
-string[] summaries = ["Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"];
-
 var api = app.MapGroup("/api");
-api.MapGet("weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
 
 api.MapGroup("/meldingen")
    .MapMeldingen()

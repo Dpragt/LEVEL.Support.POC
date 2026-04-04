@@ -1,4 +1,5 @@
-﻿using LEVEL.Support.POC.Server.Data;
+﻿using LEVEL.Support.POC.Server.Agents;
+using LEVEL.Support.POC.Server.Data;
 using LEVEL.Support.POC.Server.Data.Model;
 using Microsoft.EntityFrameworkCore;
 
@@ -46,8 +47,15 @@ public static class MeldingenEndpoints
             : Results.NotFound();
     }
 
-    private static async Task<IResult> Create(Melding melding, DataContext db)
+    private static async Task<IResult> Create(Melding melding, DataContext db, ClassificationAgent agent)
     {
+        var classification = await agent.ClassifyAsync(melding.Titel, melding.Beschrijving);
+
+        melding.Categorie ??= classification.Categorie;
+        melding.Prioriteit ??= classification.Prioriteit;
+        melding.Applicatie ??= classification.Applicatie;
+        melding.Samenvatting ??= classification.Samenvatting;
+
         db.Meldingen.Add(melding);
         await db.SaveChangesAsync();
 
