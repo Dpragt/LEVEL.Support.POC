@@ -4,5 +4,6 @@
     <Deploy />
   </Project>
   <Project Path="LEVEL.Support.POC.AppHost/LEVEL.Support.POC.AppHost.csproj" />
+  <Project Path="LEVEL.Support.POC.MCP.Classifcation/LEVEL.Support.POC.MCP.Classifcation.csproj" Id="0637b4f4-200e-4f83-a72e-de190641c406" />
   <Project Path="LEVEL.Support.POC.Server/LEVEL.Support.POC.Server.csproj" />
 </Solution>

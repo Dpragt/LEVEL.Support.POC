@@ -37,7 +37,7 @@ function MeldingForm({ melding, onSubmit, onCancel }: MeldingFormProps) {
       beschrijving,
       applicatie: applicatie || null,
       categorie: categorie || null,
-      prioriteit: prioriteit || null,
+      prioriteit: isEdit ? (prioriteit || null) : null,
       isAfgehandeld,
     })
   }
@@ -82,26 +82,27 @@ function MeldingForm({ melding, onSubmit, onCancel }: MeldingFormProps) {
           />
         </div>
 
-        <div className="form-row">
-          <div className="form-field">
-            <label htmlFor="categorie">Categorie</label>
-            <select id="categorie" value={categorie} onChange={(e) => setCategorie(e.target.value)}>
-              <option value="">— Geen —</option>
-              {categorieOpties.map((c) => (
-                <option key={c} value={c}>{c}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="form-field">
-            <label htmlFor="prioriteit">Prioriteit</label>
-            <select id="prioriteit" value={prioriteit} onChange={(e) => setPrioriteit(e.target.value)}>
-              {prioriteitOpties.map((p) => (
-                <option key={p} value={p}>{p}</option>
-              ))}
-            </select>
-          </div>
-        </div>
+          {isEdit && (
+            <div className="form-row">
+              <div className="form-field">
+                <label htmlFor="categorie">Categorie</label>
+                <select id="categorie" value={categorie} onChange={(e) => setCategorie(e.target.value)}>
+                  <option value="">— Geen —</option>
+                  {categorieOpties.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="form-field">
+                <label htmlFor="prioriteit">Prioriteit</label>
+                <select id="prioriteit" value={prioriteit} onChange={(e) => setPrioriteit(e.target.value)}>
+                  {prioriteitOpties.map((p) => (
+                    <option key={p} value={p}>{p}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+        )}
 
         {isEdit && (
           <div className="form-field form-checkbox">

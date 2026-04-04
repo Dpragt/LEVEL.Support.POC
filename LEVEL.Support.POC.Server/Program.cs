@@ -1,6 +1,8 @@
 using LEVEL.Support.POC.Server.Agents;
 using LEVEL.Support.POC.Server.Apis;
 using LEVEL.Support.POC.Server.Data;
+using LEVEL.Support.POC.Server.Orchestration;
+using LEVEL.Support.POC.Server.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.AI;
 using OpenAI;
@@ -38,6 +40,9 @@ else
 }
 
 builder.Services.AddScoped<ClassificationAgent>();
+builder.Services.AddScoped<DuplicateDetectionAgent>();
+builder.Services.AddScoped<RetrievalService>();
+builder.Services.AddScoped<MeldingOrchestrator>();
 
 var app = builder.Build();
 

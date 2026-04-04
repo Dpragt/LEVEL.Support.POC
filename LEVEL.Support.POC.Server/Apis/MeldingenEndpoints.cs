@@ -1,6 +1,6 @@
-﻿using LEVEL.Support.POC.Server.Agents;
-using LEVEL.Support.POC.Server.Data;
+﻿using LEVEL.Support.POC.Server.Data;
 using LEVEL.Support.POC.Server.Data.Model;
+using LEVEL.Support.POC.Server.Orchestration;
 using Microsoft.EntityFrameworkCore;
 
 namespace LEVEL.Support.POC.Server.Apis;
@@ -21,7 +21,9 @@ public static class MeldingenEndpoints
 
     private static async Task<IResult> GetAll(DataContext db)
     {
-        var items = await db.Meldingen.ToListAsync();
+        var items = await db.Meldingen
+            .OrderByDescending(x => x.AangemaaktOp)
+            .ToListAsync();
         return Results.Ok(items);
     }
 
@@ -29,6 +31,7 @@ public static class MeldingenEndpoints
     {
         var items = await db.Meldingen
             .Where(m => m.IsAfgehandeld)
+            .OrderByDescending(x => x.AangemaaktOp)
             .ToListAsync();
 
         return Results.Ok(items);
@@ -47,19 +50,12 @@ public static class MeldingenEndpoints
             : Results.NotFound();
     }
 
-    private static async Task<IResult> Create(Melding melding, DataContext db, ClassificationAgent agent)
+    private static async Task<IResult> Create(
+        Melding melding,
+        MeldingOrchestrator orchestrator)
     {
-        var classification = await agent.ClassifyAsync(melding.Titel, melding.Beschrijving);
-
-        melding.Categorie ??= classification.Categorie;
-        melding.Prioriteit ??= classification.Prioriteit;
-        melding.Applicatie ??= classification.Applicatie;
-        melding.Samenvatting ??= classification.Samenvatting;
-
-        db.Meldingen.Add(melding);
-        await db.SaveChangesAsync();
-
-        return Results.Created($"/api/meldingen/{melding.Id}", melding);
+        var result = await orchestrator.ProcessAsync(melding);
+        return Results.Created($"/api/meldingen/{result.Id}", result);
     }
 
     private static async Task<IResult> Update(int id, Melding input, DataContext db)
