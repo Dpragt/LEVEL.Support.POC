@@ -1,37 +1,104 @@
-# MCP Server
+# LEVEL.Support.POC
 
-This README was created using the C# MCP server project template.
-It demonstrates how you can easily create an MCP server using C# and publish it as a NuGet package.
+> **Proof of Concept** — AI-gestuurd support meldingensysteem voor lokale belasting- en waarderingsapplicaties.
 
-The MCP server is built as a self-contained application and does not require the .NET runtime to be installed on the target machine.
-However, since it is self-contained, it must be built for each target platform separately.
-By default, the template is configured to build for:
-* `win-x64`
-* `win-arm64`
-* `osx-arm64`
-* `linux-x64`
-* `linux-arm64`
-* `linux-musl-x64`
+## 🎯 Wat doet dit project?
 
-If your users require more platforms to be supported, update the list of runtime identifiers in the project's `<RuntimeIdentifiers />` element.
+Dit project is een POC voor een intelligent support systeem dat binnenkomende meldingen automatisch verwerkt met behulp van AI. Denk aan: een gebruiker maakt een melding aan ("WOZ-waarde klopt niet") en het systeem bepaalt zelfstandig de categorie, prioriteit, applicatie en samenvatting — en herkent of er al vergelijkbare meldingen bestaan.
 
-See [aka.ms/nuget/mcp/guide](https://aka.ms/nuget/mcp/guide) for the full guide.
+### De kern: AI Agents + Orchestrator
 
-Please note that this template is currently in an early preview stage. If you have feedback, please take a [brief survey](http://aka.ms/dotnet-mcp-template-survey).
+Wanneer een nieuwe melding binnenkomt, doorloopt deze het volgende pad:
 
-## Checklist before publishing to NuGet.org
+```
+Gebruiker maakt melding aan
+        ↓
+  MeldingOrchestrator
+   ├── 1. ClassificationAgent    → bepaalt categorie, prioriteit, applicatie & samenvatting
+   ├── 2. DuplicateDetectionAgent → herkent mogelijke duplicaten
+   ├── 3. Opslaan in database
+   └── 4. Koppelen van duplicaten
+        ↓
+  Verrijkte melding terug naar gebruiker
+```
 
-- Test the MCP server locally using the steps below.
-- Update the package metadata in the .csproj file, in particular the `<PackageId>`.
-- Update `.mcp/server.json` to declare your MCP server's inputs.
-  - See [configuring inputs](https://aka.ms/nuget/mcp/guide/configuring-inputs) for more details.
-- Pack the project using `dotnet pack`.
+### Agents
 
-The `bin/Release` directory will contain the package file (.nupkg), which can be [published to NuGet.org](https://learn.microsoft.com/nuget/nuget-org/publish-a-package).
+| Agent | Wat doet het? |
+|---|---|
+| **ClassificationAgent** | Classificeert meldingen op basis van titel en beschrijving. Bepaalt de **applicatie** (Taxatie, Object, Woz, Belasting, etc.), **categorie** (Bug, Feature, Vraag, Overig), **prioriteit** (Laag t/m Kritiek) en een korte **samenvatting**. |
+| **DuplicateDetectionAgent** | Vergelijkt nieuwe meldingen met bestaande meldingen en identificeert mogelijke duplicaten inclusief motivering. |
 
-## Developing locally
+### Services
 
-To test this MCP server from source code (locally) without using a built MCP server package, you can configure your IDE to run the project directly using `dotnet run`.
+| Service | Wat doet het? |
+|---|---|
+| **RetrievalService** | Haalt kandidaat-meldingen op uit de database voor de duplicate detectie agent. |
+
+## 🏗️ Projectstructuur
+
+De solution bestaat uit de volgende projecten:
+
+| Project | Beschrijving |
+|---|---|
+| **LEVEL.Support.POC.Server** | ASP.NET Core Minimal API backend (.NET 10) met AI agents, orchestrator en REST endpoints. |
+| **frontend** | React/TypeScript frontend voor het beheren van meldingen. |
+| **LEVEL.Support.POC.AppHost** | .NET Aspire App Host voor het orkestreren van de volledige applicatie. |
+| **LEVEL.Support.POC.MCP.Classifcation** | MCP Server voor classificatie (⚠️ *work in progress*, zie onder). |
+
+## ⚙️ Technologie
+
+- **.NET 10** met C# 14
+- **ASP.NET Core Minimal API** — REST endpoints
+- **.NET Aspire** — Orkestratie en service defaults
+- **Microsoft.Extensions.AI** — AI abstractielaag met OpenAI
+- **Entity Framework Core** — In-memory database (POC)
+- **React + TypeScript** — Frontend (Vite)
+
+## 🚀 Opstarten
+
+### Vereisten
+
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
+- [Node.js](https://nodejs.org/) (voor de frontend)
+- Een OpenAI API key
+
+### Configuratie
+
+Stel de OpenAI API key in via user secrets:
+
+```bash
+cd LEVEL.Support.POC.Server
+dotnet user-secrets set "OpenAI:ApiKey" "<jouw-api-key>"
+```
+
+Optioneel kan je het model instellen (standaard `gpt-4o-mini`):
+
+```bash
+dotnet user-secrets set "OpenAI:Model" "gpt-4o-mini"
+```
+
+### Draaien via Aspire
+
+```bash
+cd LEVEL.Support.POC.AppHost
+dotnet run
+```
+
+Dit start zowel de backend als de frontend.
+
+## 🔮 MCP Server (Work in Progress)
+
+> ⚠️ **Let op:** het project `LEVEL.Support.POC.MCP.Classifcation` is nog in ontwikkeling en bevat momenteel alleen placeholder-tooling (random number generator). De intentie is om de classificatie-functionaliteit als [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) server beschikbaar te maken, zodat AI-assistenten zoals GitHub Copilot de tools direct kunnen aanroepen.
+
+### Geplande MCP-tools
+
+- **Classificatie** — Meldingen classificeren op categorie, prioriteit en applicatie
+- **Duplicate detectie** — Controleren op bestaande vergelijkbare meldingen
+
+### Lokaal testen (huidige staat)
+
+Configureer de MCP server in VS Code (`.vscode/mcp.json`) of Visual Studio (`.mcp.json`):
 
 ```json
 {
@@ -42,58 +109,16 @@ To test this MCP server from source code (locally) without using a built MCP ser
       "args": [
         "run",
         "--project",
-        "<PATH TO PROJECT DIRECTORY>"
+        "LEVEL.Support.POC.MCP.Classifcation"
       ]
     }
   }
 }
 ```
 
-Refer to the VS Code or Visual Studio documentation for more information on configuring and using MCP servers:
+Meer informatie over MCP:
 
-- [Use MCP servers in VS Code (Preview)](https://code.visualstudio.com/docs/copilot/chat/mcp-servers)
-- [Use MCP servers in Visual Studio (Preview)](https://learn.microsoft.com/visualstudio/ide/mcp-servers)
-
-## Testing the MCP Server
-
-Once configured, you can ask Copilot Chat for a random number, for example, `Give me 3 random numbers`. It should prompt you to use the `get_random_number` tool on the `LEVEL.Support.POC.MCP.Classifcation` MCP server and show you the results.
-
-## Publishing to NuGet.org
-
-1. Run `dotnet pack -c Release` to create the NuGet package
-2. Publish to NuGet.org with `dotnet nuget push bin/Release/*.nupkg --api-key <your-api-key> --source https://api.nuget.org/v3/index.json`
-
-## Using the MCP Server from NuGet.org
-
-Once the MCP server package is published to NuGet.org, you can configure it in your preferred IDE. Both VS Code and Visual Studio use the `dnx` command to download and install the MCP server package from NuGet.org.
-
-- **VS Code**: Create a `<WORKSPACE DIRECTORY>/.vscode/mcp.json` file
-- **Visual Studio**: Create a `<SOLUTION DIRECTORY>\.mcp.json` file
-
-For both VS Code and Visual Studio, the configuration file uses the following server definition:
-
-```json
-{
-  "servers": {
-    "LEVEL.Support.POC.MCP.Classifcation": {
-      "type": "stdio",
-      "command": "dnx",
-      "args": [
-        "<your package ID here>",
-        "--version",
-        "<your package version here>",
-        "--yes"
-      ]
-    }
-  }
-}
-```
-
-## More information
-
-.NET MCP servers use the [ModelContextProtocol](https://www.nuget.org/packages/ModelContextProtocol) C# SDK. For more information about MCP:
-
-- [Official Documentation](https://modelcontextprotocol.io/)
-- [Protocol Specification](https://spec.modelcontextprotocol.io/)
-- [GitHub Organization](https://github.com/modelcontextprotocol)
+- [MCP Specificatie](https://spec.modelcontextprotocol.io/)
 - [MCP C# SDK](https://modelcontextprotocol.github.io/csharp-sdk)
+- [MCP servers in Visual Studio](https://learn.microsoft.com/visualstudio/ide/mcp-servers)
+- [MCP servers in VS Code](https://code.visualstudio.com/docs/copilot/chat/mcp-servers)
