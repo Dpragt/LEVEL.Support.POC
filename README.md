@@ -20,7 +20,7 @@ Georkestreerd via .NET Aspire.
 {
   "OpenAI": {
     "Model": "gpt-4o-mini",
-    "ApiKey" "<jouw-api-key>"
+    "ApiKey": "<jouw-api-key>"
   }
 }
 ```
