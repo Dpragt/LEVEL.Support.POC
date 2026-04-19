@@ -41,8 +41,3 @@ dotnet run
 ```
 
 De Aspire AppHost start automatisch de backend (`LEVEL.Support.POC.Server`) én de frontend (`frontend`). Open het Aspire dashboard om de endpoints te bekijken.
-
-- [MCP Specificatie](https://spec.modelcontextprotocol.io/)
-- [MCP C# SDK](https://modelcontextprotocol.github.io/csharp-sdk)
-- [MCP servers in Visual Studio](https://learn.microsoft.com/visualstudio/ide/mcp-servers)
-- [MCP servers in VS Code](https://code.visualstudio.com/docs/copilot/chat/mcp-servers)
